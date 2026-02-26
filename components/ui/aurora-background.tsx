@@ -71,8 +71,9 @@ const Aurora = () => {
   const uniforms = useMemo(
     () => ({
       u_time: { value: 0 },
-      u_color_a: { value: new THREE.Color('#3a0ca3') },
-      u_color_b: { value: new THREE.Color('#f72585') },
+      // Use colors from the new fintech palette for a subtle, professional aurora effect
+      u_color_a: { value: new THREE.Color('hsl(210 100% 70%)') }, // Bright blue (--color-primary)
+      u_color_b: { value: new THREE.Color('hsl(270 70% 60%)') }, // Purple accent (--color-accent)
     }),
     []
   )
