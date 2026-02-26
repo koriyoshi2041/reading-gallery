@@ -1,145 +1,70 @@
 'use client'
 
-import React, { useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import React, { useRef, useMemo, useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 
-const vertexShader = `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+// WebGL 检测
+function isWebGLAvailable(): boolean {
+  if (typeof window === 'undefined') return false
+  try {
+    const canvas = document.createElement('canvas')
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    )
+  } catch (e) {
+    return false
   }
-`
-
-const fragmentShader = `
-  uniform float time;
-  varying vec2 vUv;
-  
-  // Simplex 2D noise
-  vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-  float snoise(vec2 v){
-    const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-             -0.577350269189626, 0.024390243902439);
-    vec2 i  = floor(v + dot(v, C.yy) );
-    vec2 x0 = v -   i + dot(i, C.xx);
-    vec2 i1;
-    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-    vec4 x12 = x0.xyxy + C.xxzz;
-    x12.xy -= i1;
-    i = mod(i, 289.0);
-    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-    + i.x + vec3(0.0, i1.x, 1.0 ));
-    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
-      dot(x12.zw,x12.zw)), 0.0);
-    m = m*m ;
-    m = m*m ;
-    vec3 x = 2.0 * fract(p * C.www) - 1.0;
-    vec3 h = abs(x) - 0.5;
-    vec3 a0 = x - floor(x + 0.5);
-    vec3 g = a0.x  * vec3(x0.x,x12.xz) + h * vec3(x0.y,x12.yw);
-    vec3 l = 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-    vec3 r = g * l;
-    return 130.0 * dot(m, r);
-  }
-
-  void main() {
-    vec2 uv = vUv;
-    float n = snoise(uv * 1.5 + time * 0.1);
-    float n2 = snoise(uv * 2.0 - time * 0.05);
-    
-    vec3 color1 = vec3(0.0, 0.0, 0.0); // Deep Black
-    vec3 color2 = vec3(0.05, 0.08, 0.15); // Subtle Blueish
-    vec3 color3 = vec3(0.02, 0.02, 0.05); // Dark Purple
-    
-    vec3 finalColor = mix(color1, color2, n * 0.5 + 0.5);
-    finalColor = mix(finalColor, color3, n2 * 0.3 + 0.3);
-    
-    // Add subtle glow
-    float glow = smoothstep(0.4, 0.6, n) * 0.1;
-    finalColor += vec3(0.4, 0.5, 1.0) * glow;
-    
-    gl_FragColor = vec4(finalColor, 1.0);
-  }
-`
-
-function BackgroundPlane() {
-  const meshRef = useRef<THREE.Mesh>(null!)
-  const uniforms = useMemo(
-    () => ({
-      time: { value: 0 },
-    }),
-    []
-  )
-
-  useFrame((state) => {
-    uniforms.time.value = state.clock.getElapsedTime()
-  })
-
-  return (
-    <mesh ref={meshRef}>
-      <planeGeometry args={[20, 20]} />
-      <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-      />
-    </mesh>
-  )
 }
 
-function FloatingParticles() {
-  const count = 1000
-  const points = useRef<THREE.Points>(null!)
-  
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 10
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 10
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 5
-    }
-    return pos
-  }, [])
+// CSS Fallback 背景
+const CSSFallbackBackground = () => (
+  <div className="fixed inset-0 -z-10 bg-black overflow-hidden">
+    {/* Animated gradient background */}
+    <div 
+      className="absolute inset-0 opacity-50"
+      style={{
+        background: 'radial-gradient(ellipse at 20% 50%, rgba(30, 40, 80, 0.4) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(20, 30, 60, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(40, 50, 100, 0.2) 0%, transparent 50%)',
+        animation: 'pulse 8s ease-in-out infinite alternate'
+      }}
+    />
+    {/* Subtle grid pattern */}
+    <div 
+      className="absolute inset-0 opacity-[0.03]"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+        backgroundSize: '50px 50px'
+      }}
+    />
+    {/* Vignette */}
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
+    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black" />
+  </div>
+)
 
-  useFrame((state) => {
-    const time = state.clock.getElapsedTime()
-    points.current.rotation.y = time * 0.02
-    points.current.rotation.x = time * 0.01
-  })
-
-  return (
-    <points ref={points}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.012}
-        color="#ffffff"
-        transparent
-        opacity={0.3}
-        sizeAttenuation
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
-  )
-}
+// Three.js 组件动态导入
+const ThreeBackground = dynamic(() => import('./three-background'), {
+  ssr: false,
+  loading: () => <CSSFallbackBackground />
+})
 
 export const ImmersiveBackground = () => {
-  return (
-    <div className="fixed inset-0 -z-10 bg-black overflow-hidden">
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-        <BackgroundPlane />
-        <FloatingParticles />
-      </Canvas>
-      {/* Cinematic Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black" />
-    </div>
-  )
+  const [webglSupported, setWebglSupported] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    setWebglSupported(isWebGLAvailable())
+  }, [])
+
+  // 服务端渲染或检测中
+  if (webglSupported === null) {
+    return <CSSFallbackBackground />
+  }
+
+  // WebGL 不支持
+  if (!webglSupported) {
+    return <CSSFallbackBackground />
+  }
+
+  // WebGL 支持，使用 Three.js
+  return <ThreeBackground />
 }
