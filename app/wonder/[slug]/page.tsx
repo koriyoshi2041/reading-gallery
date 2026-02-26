@@ -1,8 +1,8 @@
 import { getAllWonders, getWonderBySlug } from '@/lib/wonders';
-import MotionWrapper from '@/components/MotionWrapper';
 import Link from 'next/link';
+import ParticlesBackground from '@/components/ParticlesBackground';
+import ReadingProgressBar from '@/components/ReadingProgressBar';
 
-// 为 Next.js 静态生成 (SSG) 提供所有可能的 slug
 export async function generateStaticParams() {
   const wonders = await getAllWonders();
   return wonders.map((wonder) => ({
@@ -21,32 +21,33 @@ export default async function WonderPage({ params }: PageProps) {
 
   return (
     <>
-      <MotionWrapper
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2, ease: "circOut" }}
-        className="w-full max-w-3xl"
-      >
-        <header className="text-center mb-12">
-          <p className="text-base text-zinc-500">{wonder.date}</p>
-          {wonder.title && (
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter mt-2">
-              {wonder.title}
-            </h1>
-          )}
+      <ParticlesBackground />
+      <ReadingProgressBar />
+      
+      <div className="w-full animate-fade-in p-4 sm:p-6 md:p-8">
+        <header className="fixed top-0 left-0 w-full p-4 flex justify-start z-10">
+          <Link href="/"
+             className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 backdrop-blur-sm p-2 rounded-md">
+              ← 返回
+          </Link>
         </header>
 
-        <article
-          className="prose prose-lg mx-auto"
-          dangerouslySetInnerHTML={{ __html: wonder.contentHtml }}
-        />
-      </MotionWrapper>
-      <footer className="absolute bottom-8 text-center">
-         <Link href="/"
-           className="text-sm text-zinc-400 hover:text-zinc-800 transition-colors duration-300">
-            ← Back to Home
-        </Link>
-      </footer>
+        <div className="flex flex-col items-center justify-center min-h-screen pt-24 pb-12">
+            <header className="text-center mb-16 max-w-4xl mx-auto">
+              <p className="text-base text-zinc-400 font-sans">{wonder.date}</p>
+              {wonder.title && (
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mt-2 font-serif">
+                  {wonder.title}
+                </h1>
+              )}
+            </header>
+
+            <article
+              className="prose prose-lg lg:prose-xl prose-invert max-w-2xl mx-auto"
+              dangerouslySetInnerHTML={{ __html: wonder.contentHtml }}
+            />
+        </div>
+      </div>
     </>
   );
 }

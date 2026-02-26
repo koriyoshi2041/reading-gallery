@@ -24,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${lora.variable}`}>
+    <html lang="en" className={`dark ${inter.variable} ${lora.variable}`}>
       <body>
-        <main className="relative flex min-h-screen flex-col items-center justify-center p-8 sm:p-12 md:p-24">
+        <main className="relative flex min-h-screen flex-col items-center justify-center">
           {children}
         </main>
       </body>
