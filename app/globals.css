@@ -3,39 +3,41 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 10 10 10;
+    --foreground: 228 228 231;
+    --muted: 24 24 27;
+    --muted-foreground: 161 161 170;
+    --popover: 10 10 10;
+    --popover-foreground: 228 228 231;
+    --card: 10 10 10;
+    --card-foreground: 228 228 231;
+    --border: 24 24 27;
+    --input: 24 24 27;
+    --primary: 250 250 250;
+    --primary-foreground: 10 10 10;
+    --secondary: 24 24 27;
+    --secondary-foreground: 250 250 250;
+    --accent: 24 24 27;
+    --accent-foreground: 250 250 250;
+    --destructive: 127 29 29;
+    --destructive-foreground: 250 250 250;
+    --ring: 24 24 27;
+  }
+
   body {
-    background-color: #121212;
-    color: #EAEAEA;
-    font-family: var(--font-serif);
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-image:
+      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to right, hsl(var(--border)) 1px, hsl(var(--background)) 1px);
+    background-size: 32px 32px;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-sans);
     font-weight: 700;
-  }
-
-  /*
-   * Prose dark theme overrides.
-   * This ensures that content rendered via `prose` looks great on a dark background.
-   */
-  .prose {
-    --tw-prose-body: theme(colors.zinc.300);
-    --tw-prose-headings: theme(colors.zinc.100);
-    --tw-prose-lead: theme(colors.zinc.400);
-    --tw-prose-links: theme(colors.amber.400);
-    --tw-prose-bold: theme(colors.white);
-    --tw-prose-counters: theme(colors.zinc.400);
-    --tw-prose-bullets: theme(colors.zinc.500);
-    --tw-prose-hr: theme(colors.zinc.800);
-    --tw-prose-quotes: theme(colors.zinc.300);
-    --tw-prose-quote-borders: theme(colors.zinc.700);
-    --tw-prose-captions: theme(colors.zinc.400);
-    --tw-prose-code: theme(colors.white);
-    --tw-prose-pre-code: theme(colors.zinc.200);
-    --tw-prose-pre-bg: theme(colors.zinc.900);
-    --tw-prose-th-borders: theme(colors.zinc.700);
-    --tw-prose-td-borders: theme(colors.zinc.800);
   }
 }
