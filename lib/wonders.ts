@@ -26,8 +26,13 @@ export async function getAllWonders(): Promise<Wonder[]> {
       })
     );
 
-    // 按标题排序
-    return allData.sort((a, b) => (a.title || a.slug).localeCompare(b.title || b.slug));
+    // 按日期倒序排序
+    return allData.sort((a, b) => {
+      if (a.date && b.date) {
+        return b.date.localeCompare(a.date);
+      }
+      return (a.title || a.slug).localeCompare(b.title || b.slug);
+    });
   } catch (error) {
     console.error("Could not read stories directory:", storiesDirectory, error);
     return [];
@@ -51,10 +56,21 @@ export async function getWonderBySlug(slug: string): Promise<Wonder> {
   const wordCount = matterResult.content.length;
   const readingTime = Math.ceil(wordCount / 500); // 假设阅读速度 500字/分钟
 
+  // 提取摘要 (去除标题后的前 150 个字符)
+  const cleanExcerpt = matterResult.data.excerpt || 
+    matterResult.content
+      .replace(/^#\s+.+/m, '') // 去除标题
+      .replace(/#+\s+.+/g, '') // 去除副标题
+      .replace(/\[(.+?)\]\(.+?\)/g, '$1') // 去除链接
+      .replace(/\s+/g, ' ') // 合并空格
+      .trim()
+      .substring(0, 150) + '...';
+
   return {
     slug,
     date: matterResult.data.date || '',
     title,
+    excerpt: cleanExcerpt,
     contentHtml,
     wordCount,
     readingTime,

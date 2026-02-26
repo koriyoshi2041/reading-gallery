@@ -1,31 +1,38 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 
-const ReadingProgressBar = () => {
-  const [width, setWidth] = useState(0);
+export default function ReadingProgressBar() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
 
-  const scrollHeight = () => {
-    const el = document.documentElement;
-    const a = el.scrollHeight - el.clientHeight;
-    const b = window.scrollY;
-    const scrolled = (b / a) * 100;
-    setWidth(scrolled);
-  };
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    window.addEventListener('scroll', scrollHeight);
-    return () => window.removeEventListener('scroll', scrollHeight);
-  }, []);
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setIsVisible(true)
+      } else {
+        setIsVisible(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <div className="fixed top-0 left-0 z-[100] w-full h-[2px] bg-white/10">
-      <div 
-        className="h-full bg-white transition-all duration-300 ease-out shadow-[0_0_10px_rgba(255,255,255,0.5)]" 
-        style={{ width: `${width}%` }}
-      />
-    </div>
-  );
-};
-
-export default ReadingProgressBar;
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-white z-[100] origin-left"
+      style={{ 
+        scaleX,
+        opacity: isVisible ? 1 : 0
+      }}
+    />
+  )
+}

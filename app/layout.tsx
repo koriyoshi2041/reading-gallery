@@ -21,7 +21,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${inter.variable} scroll-smooth`}>
-      <body className="antialiased selection:bg-white selection:text-black">
+      <body className="antialiased selection:bg-white selection:text-black min-h-screen">
+        <div className="grain-overlay" />
         <ImmersiveBackground />
         <main className="relative z-10">
           {children}
