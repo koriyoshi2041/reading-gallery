@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuroraBackground } from "@/components/ui/aurora-background";
+import { ImmersiveBackground } from "@/components/ui/immersive-background";
 
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-sans",
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Reading Gallery",
-  description: "A new era of immersive reading.",
+  title: "Reading Gallery | Immersive Narrative Experience",
+  description: "Experience reading in a cinematic and high-contrast digital environment.",
 };
 
 export default function RootLayout({
@@ -19,10 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
-      <body>
-        <AuroraBackground />
-        <main className="relative z-10 flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+    <html lang="en" className={`dark ${inter.variable} scroll-smooth`}>
+      <body className="antialiased selection:bg-white selection:text-black">
+        <ImmersiveBackground />
+        <main className="relative z-10">
           {children}
         </main>
       </body>

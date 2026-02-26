@@ -4,38 +4,94 @@
 
 @layer base {
   :root {
-    /* Define a dark, high-contrast fintech palette */
-    --color-background: hsl(220 13% 8%); /* Very dark grey */
-    --color-foreground: hsl(220 13% 98%); /* Near white for text */
-    --color-primary: hsl(210 100% 70%); /* Bright blue for accents/links */
-    --color-secondary: hsl(220 10% 20%); /* Slightly lighter dark for secondary elements */
-    --color-accent: hsl(270 70% 60%); /* Purple accent for hover/active states */
-    --color-accent-dark: hsl(270 70% 40%); /* Darker accent */
-    --color-muted: hsl(220 8% 30%); /* Muted grey for borders/dividers */
-    --color-card: hsl(220 13% 15%); /* Card backgrounds */
-    --color-border: hsl(220 8% 25%); /* Subtle border color */
-    --color-input: hsl(220 13% 15%); /* Input fields */
-    --color-ring: hsl(210 100% 70%); /* Focus rings */
-    --color-destructive: hsl(0 70% 50%); /* Destructive actions */
-
-    /* Custom font properties, will be picked up by tailwind.config.ts */
-    --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /* Pure Fintech Obsidian Palette */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    
+    --radius: 0.5rem;
   }
+}
 
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Adjust grid background to match new palette */
-    background-image:
-      linear-gradient(var(--color-border) 1px, transparent 1px),
-      linear-gradient(to right, var(--color-border) 1px, var(--color-background) 1px);
-    background-size: 32px 32px;
+    /* This makes the text much clearer */
+    text-rendering: optimizeLegibility;
   }
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 700; /* Ensure headings are bold */
-  }
+/* Custom Scrollbar for Cinematic feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Glassmorphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Typography Enhancements */
+.prose {
+  @apply max-w-none text-zinc-200;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  @apply text-white font-bold tracking-tight;
+}
+
+.prose p {
+  @apply leading-relaxed mb-6 text-zinc-300;
+  font-size: 1.125rem; /* 18px for better readability */
+}
+
+/* High contrast links */
+.prose a {
+  @apply text-white underline underline-offset-4 decoration-zinc-500 hover:decoration-white transition-all duration-300;
 }
